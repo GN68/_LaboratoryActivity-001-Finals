@@ -33,7 +33,7 @@ public class Main {
     static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("Declare a variable: ");
+            System.out.println("Declare a variable: (enter nothing for a full test demo)");
             String input = scanner.nextLine();
 
             if (!input.isEmpty()) {
