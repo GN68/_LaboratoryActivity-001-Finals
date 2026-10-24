@@ -1,5 +1,6 @@
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 import java.util.stream.IntStream;
 
 public class Main {
@@ -75,7 +76,13 @@ public class Main {
         input = input.replace("="," = ");
 
         // split into separate words
-        String[] words = input.split("\\s+");
+        // split into words without regex
+        StringTokenizer tokenizer = new StringTokenizer(input);
+        String[] words = new String[tokenizer.countTokens()];
+        int i = 0;
+        while (tokenizer.hasMoreTokens()) {
+            words[i++] = tokenizer.nextToken();
+        }
 
 
         // [ERROR]: Missing data type declaration
@@ -95,38 +102,52 @@ public class Main {
         String value      = words[3];
 
         // [ERROR]: Unexpected assignment operator
-        if (!Objects.equals(assignment, "=")) {
-            error("Unexpected token \"" + assignment + "\", it should be \"=\"");
-            return;
-        }
-
         if (Objects.equals(data_type, "int")) {
-            if (!value.matches("[+-]?\\d+")) {
+            try {
+                Integer.parseInt(value);
+            } catch (NumberFormatException e) {
                 error("Invalid int");
                 return;
             }
         }
-        else if (Objects.equals(data_type, "long")) { // handwritten pattern
-            if (!value.matches("[+-]?\\d+[lL]?")) {
+        else if (Objects.equals(data_type, "long")) {
+            String clean = value;
+            if (value.endsWith("l") || value.endsWith("L")) {
+                clean = value.substring(0, value.length() - 1);
+            }
+            try {
+                Long.parseLong(clean);
+            } catch (NumberFormatException e) {
                 error("Invalid long");
                 return;
             }
         }
-        else if (Objects.equals(data_type, "float")) {// I stole this abomination here https://stackoverflow.com/questions/6754552/regex-to-find-a-float
-            if (!value.matches("[+-]?(\\d+|\\d+\\.\\d+|\\.\\d+|\\d+\\.)([eE][+-]?\\d+)?[fF]?")) {
+        else if (Objects.equals(data_type, "float")) {
+            String clean = value;
+            if (value.endsWith("f") || value.endsWith("F")) {
+                clean = value.substring(0, value.length() - 1);
+            }
+            try {
+                Float.parseFloat(clean);
+            } catch (NumberFormatException e) {
                 error("Invalid float");
                 return;
             }
-
         }
-        else if (Objects.equals(data_type, "double")) { // the same pattern as float's, but replacaed with dD instead of fF yeahh
-            if (!value.matches("[+-]?(\\d+|\\d+\\.\\d+|\\.\\d+|\\d+\\.)([eE][+-]?\\d+)?[dD]?")) {
+        else if (Objects.equals(data_type, "double")) {
+            String clean = value;
+            if (value.endsWith("d") || value.endsWith("D")) {
+                clean = value.substring(0, value.length() - 1);
+            }
+            try {
+                Double.parseDouble(clean);
+            } catch (NumberFormatException e) {
                 error("Invalid double");
                 return;
             }
         }
-        else if (Objects.equals(data_type, "char")) {// handwritten pattern
-            if (!value.matches("'.'")) {
+        else if (Objects.equals(data_type, "char")) {
+            if (!(value.length() == 3 && value.charAt(0) == '\'' && value.charAt(2) == '\'')) {
                 error("Invalid char");
                 return;
             }
